@@ -1,0 +1,259 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Root collections for businesses and profiles
+    match /businesses/{businessId} {
+      allow get, list: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create, update: if isSignedIn() && isValidId(businessId) && isValidBusiness(incoming()) && incoming().userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /profiles/{profileId} {
+      allow get, list: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create, update: if isSignedIn() && isValidId(profileId) && isValidBusiness(incoming()) && incoming().userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Helpers
+    function isValidUserProfile(data) {
+      return data.displayName is string && data.displayName.size() > 0 && data.displayName.size() <= 100 &&
+             data.email is string && data.email.size() > 0 && data.email.size() <= 100 &&
+             (!('currency' in data) || (data.currency is string && data.currency.size() <= 10)) &&
+             (!('businessName' in data) || (data.businessName is string && data.businessName.size() <= 100)) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() <= 50)) &&
+             (!('activeContext' in data) || (data.activeContext is string && data.activeContext.size() <= 50));
+    }
+
+    function isValidBusiness(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.type is string && (data.type == 'eshop' || data.type == 'freshoo' || data.type == 'personal');
+    }
+
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
+             data.businessId is string && data.businessId.size() <= 50 &&
+             data.purchaseCost is number && data.purchaseCost >= 0 &&
+             data.sellingPrice is number && data.sellingPrice >= 0 &&
+             data.currentStock is number;
+    }
+
+    function isValidStockMovement(data) {
+      return data.productId is string && data.productId.size() > 0 &&
+             data.businessId is string &&
+             data.type is string &&
+             data.quantityDelta is number &&
+             data.reason is string && data.reason.size() <= 200;
+    }
+
+    function isValidCustomer(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 50;
+    }
+
+    function isValidSupplier(data) {
+      return data.supplierName is string && data.supplierName.size() > 0 && data.supplierName.size() <= 100 &&
+             data.businessId is string && data.businessId.size() <= 50;
+    }
+
+    function isValidSale(data) {
+      return data.invoiceNumber is string && data.invoiceNumber.size() > 0 && data.invoiceNumber.size() <= 50 &&
+             data.businessId is string &&
+             data.totalAmount is number && data.totalAmount >= 0 &&
+             data.amountReceived is number && data.amountReceived >= 0 &&
+             data.paymentStatus is string;
+    }
+
+    function isValidPurchase(data) {
+      return data.purchaseId is string && data.purchaseId.size() > 0 && data.purchaseId.size() <= 50 &&
+             data.businessId is string &&
+             data.totalAmount is number && data.totalAmount >= 0 &&
+             data.amountPaid is number && data.amountPaid >= 0;
+    }
+
+    function isValidParcel(data) {
+      return data.parcelId is string && data.parcelId.size() > 0 && data.parcelId.size() <= 50 &&
+             data.businessId is string &&
+             data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 100 &&
+             data.codAmount is number && data.codAmount >= 0 &&
+             data.courierCompany is string && data.courierCompany.size() <= 50 &&
+             data.deliveryStatus is string && data.settlementStatus is string;
+    }
+
+    function isValidCodSettlement(data) {
+      return data.settlementId is string && data.settlementId.size() > 0 && data.settlementId.size() <= 50 &&
+             data.courierCompany is string &&
+             data.businessId is string &&
+             data.netSettlement is number &&
+             data.receivedAmount is number;
+    }
+
+    function isValidExpense(data) {
+      return data.profileId is string && data.profileId.size() <= 50 &&
+             data.category is string && data.category.size() <= 100 &&
+             data.amount is number && data.amount >= 0 &&
+             data.paymentMethod is string && data.paymentMethod.size() <= 50;
+    }
+
+    function isValidIncome(data) {
+      return data.profileId is string && data.profileId.size() <= 50 &&
+             data.category is string && data.category.size() <= 100 &&
+             data.amount is number && data.amount >= 0 &&
+             data.paymentMethod is string && data.paymentMethod.size() <= 50;
+    }
+
+    function isValidAccount(data) {
+      return data.accountName is string && data.accountName.size() > 0 && data.accountName.size() <= 100 &&
+             data.accountType is string && data.accountType.size() <= 50 &&
+             data.balance is number;
+    }
+
+    function isValidTransfer(data) {
+      return data.fromAccountId is string && data.toAccountId is string &&
+             data.amount is number && data.amount > 0;
+    }
+
+    function isValidNotification(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() <= 150 &&
+             data.message is string && data.message.size() <= 500 &&
+             data.isRead is bool;
+    }
+
+    // Root User Document
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow create, update: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming());
+      allow delete: if isOwner(userId) && isValidId(userId);
+
+      // Business Profiles
+      match /businesses/{businessId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(businessId) && isValidBusiness(incoming());
+        allow delete: if isOwner(userId) && isValidId(businessId);
+      }
+
+      // Profiles (Financial Contexts: E-SHOP, FRESHOO FOOD, PERSONAL ACCOUNT)
+      match /profiles/{profileId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(profileId) && isValidBusiness(incoming());
+        allow delete: if isOwner(userId) && isValidId(profileId);
+      }
+
+      // Products
+      match /products/{productId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(productId) && isValidProduct(incoming());
+        allow delete: if isOwner(userId) && isValidId(productId);
+      }
+
+      // Stock Movement Ledger (Append-only / Immutable)
+      match /stock_movements/{movementId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(movementId) && isValidStockMovement(incoming());
+        allow update, delete: if false;
+      }
+
+      // Customers
+      match /customers/{customerId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(customerId) && isValidCustomer(incoming());
+        allow delete: if isOwner(userId) && isValidId(customerId);
+      }
+
+      // Suppliers
+      match /suppliers/{supplierId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(supplierId) && isValidSupplier(incoming());
+        allow delete: if isOwner(userId) && isValidId(supplierId);
+      }
+
+      // Sales
+      match /sales/{saleId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(saleId) && isValidSale(incoming());
+        allow delete: if isOwner(userId) && isValidId(saleId);
+      }
+
+      // Purchases
+      match /purchases/{purchaseId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(purchaseId) && isValidPurchase(incoming());
+        allow delete: if isOwner(userId) && isValidId(purchaseId);
+      }
+
+      // Courier Parcels
+      match /parcels/{parcelId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(parcelId) && isValidParcel(incoming());
+        allow delete: if isOwner(userId) && isValidId(parcelId);
+      }
+
+      // COD Settlements
+      match /cod_settlements/{settlementId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(settlementId) && isValidCodSettlement(incoming());
+        allow delete: if isOwner(userId) && isValidId(settlementId);
+      }
+
+      // Expenses
+      match /expenses/{expenseId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(expenseId) && isValidExpense(incoming());
+        allow delete: if isOwner(userId) && isValidId(expenseId);
+      }
+
+      // Incomes
+      match /incomes/{incomeId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(incomeId) && isValidIncome(incoming());
+        allow delete: if isOwner(userId) && isValidId(incomeId);
+      }
+
+      // Accounts (Cash / Bank / Wallets)
+      match /accounts/{accountId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(accountId) && isValidAccount(incoming());
+        allow delete: if isOwner(userId) && isValidId(accountId);
+      }
+
+      // Transfers (Immutable internal transfer history)
+      match /transfers/{transferId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(transferId) && isValidTransfer(incoming());
+        allow update, delete: if false;
+      }
+
+      // Notifications
+      match /notifications/{notificationId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidId(notificationId) && isValidNotification(incoming());
+        allow delete: if isOwner(userId) && isValidId(notificationId);
+      }
+    }
+  }
+}

@@ -1,0 +1,358 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile and settings",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "currency": { "type": "string" },
+        "activeContext": { "type": "string", "enum": ["eshop", "freshoo", "personal", "all"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["displayName", "email", "currency", "createdAt", "updatedAt"]
+    },
+    "BusinessProfile": {
+      "title": "BusinessProfile",
+      "description": "Business or personal profile entity",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["eshop", "freshoo", "personal"] },
+        "tagline": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "type", "createdAt", "updatedAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Inventory product item",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "businessId": { "type": "string" },
+        "sku": { "type": "string" },
+        "barcode": { "type": "string" },
+        "category": { "type": "string" },
+        "unit": { "type": "string" },
+        "purchaseCost": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "wholesalePrice": { "type": "number" },
+        "currentStock": { "type": "number" },
+        "minStock": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "businessId", "sku", "purchaseCost", "sellingPrice", "currentStock", "minStock", "createdAt", "updatedAt"]
+    },
+    "StockMovement": {
+      "title": "StockMovement",
+      "description": "Stock movement audit trail",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "businessId": { "type": "string" },
+        "type": { "type": "string", "enum": ["SALE", "PURCHASE", "ADJUSTMENT", "TRANSFER", "RETURN"] },
+        "quantityDelta": { "type": "number" },
+        "previousStock": { "type": "number" },
+        "newStock": { "type": "number" },
+        "reason": { "type": "string" },
+        "referenceId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "productName", "businessId", "type", "quantityDelta", "previousStock", "newStock", "reason", "createdAt"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "district": { "type": "string" },
+        "totalOrders": { "type": "number" },
+        "totalPurchases": { "type": "number" },
+        "outstandingBalance": { "type": "number" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "createdAt", "updatedAt"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Supplier profile",
+      "type": "object",
+      "properties": {
+        "supplierName": { "type": "string" },
+        "contactPerson": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "businessId": { "type": "string" },
+        "openingBalance": { "type": "number" },
+        "totalPurchases": { "type": "number" },
+        "totalPayments": { "type": "number" },
+        "outstandingPayable": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["supplierName", "businessId", "createdAt", "updatedAt"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Sale invoice",
+      "type": "object",
+      "properties": {
+        "invoiceNumber": { "type": "string" },
+        "businessId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "tax": { "type": "number" },
+        "deliveryCharge": { "type": "number" },
+        "packagingCost": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "amountReceived": { "type": "number" },
+        "outstandingAmount": { "type": "number" },
+        "estimatedProfit": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "paymentStatus": { "type": "string", "enum": ["Paid", "Partially Paid", "Unpaid", "Refunded"] },
+        "saleDate": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["invoiceNumber", "businessId", "customerName", "totalAmount", "amountReceived", "paymentStatus", "saleDate", "createdAt", "updatedAt"]
+    },
+    "Purchase": {
+      "title": "Purchase",
+      "description": "Purchase record from supplier",
+      "type": "object",
+      "properties": {
+        "purchaseId": { "type": "string" },
+        "supplierId": { "type": "string" },
+        "supplierName": { "type": "string" },
+        "businessId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "outstandingPayable": { "type": "number" },
+        "additionalCosts": { "type": "number" },
+        "purchaseDate": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["purchaseId", "supplierName", "businessId", "totalAmount", "amountPaid", "purchaseDate", "createdAt", "updatedAt"]
+    },
+    "Parcel": {
+      "title": "Parcel",
+      "description": "Courier parcel tracking and COD",
+      "type": "object",
+      "properties": {
+        "parcelId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "businessId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerAddress": { "type": "string" },
+        "productDetails": { "type": "string" },
+        "codAmount": { "type": "number" },
+        "courierCompany": { "type": "string" },
+        "trackingNumber": { "type": "string" },
+        "deliveryCharge": { "type": "number" },
+        "packagingCharge": { "type": "number" },
+        "parcelDate": { "type": "string" },
+        "deliveryStatus": { "type": "string", "enum": ["Pending", "Ready to Ship", "Picked Up", "In Transit", "Delivered", "Returned", "Cancelled", "Delivery Failed"] },
+        "settlementStatus": { "type": "string", "enum": ["Pending", "Partially Settled", "Settled"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["parcelId", "businessId", "customerName", "customerPhone", "codAmount", "courierCompany", "deliveryStatus", "settlementStatus", "createdAt", "updatedAt"]
+    },
+    "CodSettlement": {
+      "title": "CodSettlement",
+      "description": "Courier COD settlement batch",
+      "type": "object",
+      "properties": {
+        "settlementId": { "type": "string" },
+        "courierCompany": { "type": "string" },
+        "businessId": { "type": "string" },
+        "totalCodCollected": { "type": "number" },
+        "courierCharges": { "type": "number" },
+        "additionalFees": { "type": "number" },
+        "netSettlement": { "type": "number" },
+        "receivedAmount": { "type": "number" },
+        "outstandingAmount": { "type": "number" },
+        "settlementDate": { "type": "string" },
+        "parcelIds": { "type": "array" },
+        "status": { "type": "string", "enum": ["Settled", "Partially Settled"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["settlementId", "courierCompany", "businessId", "netSettlement", "receivedAmount", "settlementDate", "createdAt", "updatedAt"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Business or personal expense",
+      "type": "object",
+      "properties": {
+        "profileId": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "description": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["profileId", "category", "amount", "date", "paymentMethod", "description", "createdAt", "updatedAt"]
+    },
+    "Income": {
+      "title": "Income",
+      "description": "Business or personal income entry",
+      "type": "object",
+      "properties": {
+        "profileId": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "description": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["profileId", "category", "amount", "date", "paymentMethod", "description", "createdAt", "updatedAt"]
+    },
+    "Account": {
+      "title": "Account",
+      "description": "Financial cash or bank account",
+      "type": "object",
+      "properties": {
+        "accountName": { "type": "string" },
+        "accountType": { "type": "string", "enum": ["Cash", "Bank", "bKash", "Nagad", "Rocket", "Other"] },
+        "accountNumber": { "type": "string" },
+        "balance": { "type": "number" },
+        "businessId": { "type": "string" },
+        "isPersonal": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["accountName", "accountType", "balance", "createdAt", "updatedAt"]
+    },
+    "Transfer": {
+      "title": "Transfer",
+      "description": "Internal account transfer record",
+      "type": "object",
+      "properties": {
+        "fromAccountId": { "type": "string" },
+        "fromAccountName": { "type": "string" },
+        "toAccountId": { "type": "string" },
+        "toAccountName": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "note": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fromAccountId", "toAccountId", "amount", "date", "createdAt"]
+    },
+    "NotificationItem": {
+      "title": "NotificationItem",
+      "description": "User notification alert",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["LOW_STOCK", "PENDING_COURIER", "COD_PENDING", "PAYMENT_DUE", "INFO"] },
+        "isRead": { "type": "boolean" },
+        "businessId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "message", "type", "isRead", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Root user profile document"
+    },
+    "/users/{userId}/businesses/{businessId}": {
+      "schema": { "$ref": "#/entities/BusinessProfile" },
+      "description": "Business financial profiles (E-SHOP, FRESHOO FOOD, PERSONAL ACCOUNT)"
+    },
+    "/users/{userId}/profiles/{profileId}": {
+      "schema": { "$ref": "#/entities/BusinessProfile" },
+      "description": "Profiles context switching collection"
+    },
+    "/users/{userId}/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Products catalogue and stock"
+    },
+    "/users/{userId}/stock_movements/{movementId}": {
+      "schema": { "$ref": "#/entities/StockMovement" },
+      "description": "Immutable ledger of stock movements"
+    },
+    "/users/{userId}/customers/{customerId}": {
+      "schema": { "$ref": "#/entities/Customer" },
+      "description": "Customer profiles and ledgers"
+    },
+    "/users/{userId}/suppliers/{supplierId}": {
+      "schema": { "$ref": "#/entities/Supplier" },
+      "description": "Supplier profiles and ledgers"
+    },
+    "/users/{userId}/sales/{saleId}": {
+      "schema": { "$ref": "#/entities/Sale" },
+      "description": "Sales invoices"
+    },
+    "/users/{userId}/purchases/{purchaseId}": {
+      "schema": { "$ref": "#/entities/Purchase" },
+      "description": "Supplier purchase records"
+    },
+    "/users/{userId}/parcels/{parcelId}": {
+      "schema": { "$ref": "#/entities/Parcel" },
+      "description": "Courier delivery parcels and tracking"
+    },
+    "/users/{userId}/cod_settlements/{settlementId}": {
+      "schema": { "$ref": "#/entities/CodSettlement" },
+      "description": "Courier COD settlement reconciliations"
+    },
+    "/users/{userId}/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Business and personal expenses"
+    },
+    "/users/{userId}/incomes/{incomeId}": {
+      "schema": { "$ref": "#/entities/Income" },
+      "description": "Business and personal income"
+    },
+    "/users/{userId}/accounts/{accountId}": {
+      "schema": { "$ref": "#/entities/Account" },
+      "description": "Cash and bank accounts"
+    },
+    "/users/{userId}/transfers/{transferId}": {
+      "schema": { "$ref": "#/entities/Transfer" },
+      "description": "Internal balance transfers"
+    },
+    "/users/{userId}/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/NotificationItem" },
+      "description": "In-app system notifications"
+    }
+  }
+}

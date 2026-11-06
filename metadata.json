@@ -1,0 +1,6 @@
+{
+  "name": "Imran Business",
+  "description": "Multi-Business Management, Accounting, Inventory, Sales, Purchase, Courier and Personal Finance Management System.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

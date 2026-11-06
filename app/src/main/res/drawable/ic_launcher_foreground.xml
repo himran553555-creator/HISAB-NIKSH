@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Centered within 66dp safe zone (from 21,21 to 87,87) -->
+    <!-- Background Emblem Card -->
+    <path
+        android:fillColor="#059669"
+        android:pathData="M34,26 C30,26 27,29 27,33 L27,75 C27,79 30,82 34,82 L74,82 C78,82 81,79 81,75 L81,33 C81,29 78,26 74,26 Z" />
+    
+    <!-- Accent Top Ribbon -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M34,26 C30,26 27,29 27,33 L27,42 L81,42 L81,33 C81,29 78,26 74,26 Z" />
+
+    <!-- Financial Growth Chart Bars -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M33,62 L39,62 L39,74 L33,74 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M43,54 L49,54 L49,74 L43,74 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M53,46 L59,46 L59,74 L53,74 Z" />
+    <path
+        android:fillColor="#FCD34D"
+        android:pathData="M63,38 L69,38 L69,74 L63,74 Z" />
+
+    <!-- Upward Trend Arrow -->
+    <path
+        android:fillColor="#FCD34D"
+        android:pathData="M35,56 L53,42 L61,48 L71,36 L71,43 L74,43 L74,32 L63,32 L63,35 L70,35 L61,45 L53,39 L33,54 Z" />
+        
+    <!-- App Initial / Symbol Dot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,34 A3,3 0 1,1 54,34.01" />
+</vector>
